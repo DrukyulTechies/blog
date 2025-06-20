@@ -5,12 +5,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
     "generate-index": "node scripts/generateIndex.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "dev": "vite",
     "prebuild": "npm run generate-index",
-    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
