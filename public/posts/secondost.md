@@ -1,5 +1,5 @@
 ---
-title: My First Post
+title: secondost
 date: 2025-06-20
 slug: my-first-post
 ---
