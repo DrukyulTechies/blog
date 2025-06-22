@@ -5,11 +5,11 @@ import BounceCards from "./effects/bitsComponents/bounceCard";
 import Particles from "./effects/bitsComponents/particles";
 
 const images = [
-  "https://picsum.photos/400/400?grayscale",
-  "https://picsum.photos/500/500?grayscale",
-  "https://picsum.photos/600/600?grayscale",
-  "https://picsum.photos/700/700?grayscale",
-  "https://picsum.photos/300/300?grayscale",
+  "https://images.unsplash.com/photo-1597658333270-8c0d8f0eb845?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1629778662699-b6c4362230d9?q=80&w=1937&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1585982343981-53b06b597857?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1733517766494-99cc61735d27?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://plus.unsplash.com/premium_photo-1675865393754-67eac4271eb8?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
 const transformStyles = [
@@ -62,8 +62,8 @@ export default function HeroSection() {
             />
           </h1>
           <p className="text-base md:text-lg mb-6">
-            Everything for everyone. Deep dives into software, AI trends,
-            development tips, and more.
+            Everything for everyone Collection of notes, lessons, and blogs from
+            various subjects.
           </p>
           <button className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
             Read Articles

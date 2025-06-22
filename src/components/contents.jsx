@@ -11,10 +11,10 @@ export default function Contents() {
       <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 p-4 md:p-10">
         <FadeInSection direction="left">
           <div>
-            <h1 className="text-2xl font-light text-white">
+            <h1 className="text-3xl text-white font-bold">
               Learning that is accessible to all
             </h1>
-            <p className="text-gray-300 mt-5">
+            <p className="text-gray-300 mt-5 text-lg">
               Education should never be limited by location, background, or
               resources. Our platform is dedicated to providing clear, concise,
               and comprehensive study notes and articles that are freely
@@ -83,10 +83,10 @@ export default function Contents() {
             </Stepper>
           </div>
           <div className="md:order-2">
-            <h1 className="text-2xl font-light text-white">
+            <h1 className="text-3xl text-white font-bold">
               How to use the Site
             </h1>
-            <p>
+            <p className="text-gray-300 mt-5 text-lg">
               Start by selecting your course or subject, then dive into expertly
               crafted notes and articles designed to reinforce your
               understanding. Our intuitive layout helps you quickly find the
@@ -101,10 +101,10 @@ export default function Contents() {
       <FadeInSection direction="left" delay={0.4}>
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 p-4 md:p-10">
           <div>
-            <h1 className="text-2xl font-light text-white">
+            <h1 className="text-3xl text-white font-bold">
               Contribute to the Subject
             </h1>
-            <p>
+            <p className="text-gray-300 mt-5 text-lg">
               We believe education is a collaborative effort. If you’re an
               educator, student, or subject enthusiast, we warmly invite you to
               share your insights, notes, or articles. By contributing, you help

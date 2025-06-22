@@ -1,22 +1,16 @@
-// utils/getCategories.js
-export function getCategories(posts) {
+export function getCategoryMapFromPosts(posts) {
   const map = {};
 
-  posts.forEach(({ category, subcategory }) => {
-    if (!category) return;
-
-    if (!map[category]) {
-      map[category] = new Set();
-    }
-    if (subcategory) {
-      map[category].add(subcategory);
-    }
+  posts.forEach((post) => {
+    if (!post.category) return;
+    if (!map[post.category]) map[post.category] = new Set();
+    if (post.subcategory) map[post.category].add(post.subcategory);
   });
 
-  // Convert Set to array for ease of use
-  const result = {};
-  for (const [cat, subSet] of Object.entries(map)) {
-    result[cat] = Array.from(subSet);
+  const categoryMap = {};
+  for (const cat in map) {
+    categoryMap[cat] = Array.from(map[cat]);
   }
-  return result;
+
+  return categoryMap;
 }

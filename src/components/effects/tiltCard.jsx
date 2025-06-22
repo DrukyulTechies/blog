@@ -10,17 +10,17 @@ const cards = [
   {
     imageSrc: "https://picsum.photos/id/1025/600/400",
     altText: "Card 2",
-    captionText: "Interactive Learning",
+    captionText: "take notes",
   },
   {
     imageSrc: "https://picsum.photos/id/1005/600/400",
     altText: "Card 3",
-    captionText: "Stay Ahead",
+    captionText: "Make Learning Easier",
   },
   {
     imageSrc: "https://picsum.photos/id/1015/600/400",
     altText: "Card 4",
-    captionText: "Contribute",
+    captionText: "Contribute a blog",
   },
 ];
 

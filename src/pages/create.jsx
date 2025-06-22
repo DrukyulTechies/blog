@@ -1,259 +1,194 @@
-import React, { useState, useEffect } from "react";
-// Import your posts index JSON or pass as prop
-import { posts } from "../posts/index"; // adjust path as needed
+import React, { useState } from "react";
 
-export default function CreatePost() {
-  const [formData, setFormData] = useState({
+const categories = {
+  Aptitude: ["Combinations", "Permutations", "Probability"],
+  Tech: ["JavaScript", "React", "CSS"],
+  Education: ["Mathematics", "Science", "Computer Science"],
+};
+
+export default function MarkdownPostGenerator() {
+  const [form, setForm] = useState({
     title: "",
-    slug: "",
-    date: new Date().toISOString().slice(0, 10),
+    description: "",
+    date: new Date().toISOString().split("T")[0],
     category: "",
     subcategory: "",
     author: "",
-    image: "",
-    description: "",
+    image: "https://picsum.photos/200/300?grayscale",
     content: "",
   });
 
-  const [markdown, setMarkdown] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState(null);
+  const slugify = (text) =>
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
-  // Extract unique categories and subcategories from posts
-  const categoriesMap = React.useMemo(() => {
-    const map = {};
-    posts.forEach((post) => {
-      if (!map[post.category]) map[post.category] = new Set();
-      if (post.subcategory) map[post.category].add(post.subcategory);
-    });
-    // Convert subcategory sets to arrays
-    for (const key in map) {
-      map[key] = Array.from(map[key]);
-    }
-    return map;
-  }, []);
-
-  const categories = Object.keys(categoriesMap);
-
-  // When category changes, reset subcategory if not valid
-  useEffect(() => {
-    if (
-      formData.subcategory &&
-      (!categoriesMap[formData.category] ||
-        !categoriesMap[formData.category].includes(formData.subcategory))
-    ) {
-      setFormData((f) => ({ ...f, subcategory: "" }));
-    }
-  }, [formData.category, formData.subcategory, categoriesMap]);
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const handleChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const generateMarkdown = () => {
-    const {
-      title,
-      slug,
-      date,
-      category,
-      subcategory,
-      author,
-      image,
-      description,
-      content,
-    } = formData;
+  const handleDownload = () => {
+    if (!form.title || !form.description || !form.category || !form.author) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
-    return `---
-title: "${title}"
-description: "${description}"
-date: "${date}"
+    const slug = slugify(form.title);
+    const wordCount = form.content.trim().split(/\s+/).filter(Boolean).length;
+
+    const markdown = `---
+title: "${form.title}"
+description: "${form.description}"
+date: "${form.date}"
 slug: "${slug}"
-category: "${category}"
-subcategory: "${subcategory}"
-author: "${author}"
-image: "${image}"
+category: "${form.category.toLowerCase()}"
+subcategory: "${form.subcategory ? form.subcategory.toLowerCase() : ""}"
+author: "${form.author}"
+image: "${form.image}"
+wordCount: ${wordCount}
 ---
 
-${content}
-`;
-  };
+${form.content}`;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const mdText = generateMarkdown();
-    setMarkdown(mdText);
-    const blob = new Blob([mdText], { type: "text/markdown" });
+    const blob = new Blob([markdown], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
-    setDownloadUrl(url);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${slug}.mdx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow mt-10">
-      <h1 className="text-2xl font-bold mb-4">Create New Blog Post Markdown</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Other inputs ... */}
+    <div className="max-w-4xl mx-auto px-6 py-10 bg-white rounded-xl shadow-lg">
+      <h1 className="text-3xl font-bold mb-8 text-blue-700 text-center">
+        📝 Markdown Blog Generator
+      </h1>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Title */}
         <div>
-          <label className="block font-semibold mb-1">Category</label>
+          <label className="block mb-1 font-semibold">Title *</label>
+          <input
+            type="text"
+            placeholder="e.g. Notes on Combinations"
+            value={form.title}
+            onChange={(e) => handleChange("title", e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block mb-1 font-semibold">Description *</label>
+          <input
+            type="text"
+            placeholder="Brief summary of your post"
+            value={form.description}
+            onChange={(e) => handleChange("description", e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        {/* Date */}
+        <div>
+          <label className="block mb-1 font-semibold">Date *</label>
+          <input
+            type="date"
+            value={form.date}
+            onChange={(e) => handleChange("date", e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        {/* Author */}
+        <div>
+          <label className="block mb-1 font-semibold">Author *</label>
+          <input
+            type="text"
+            placeholder="Your name"
+            value={form.author}
+            onChange={(e) => handleChange("author", e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label className="block mb-1 font-semibold">Category *</label>
           <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
+            value={form.category}
+            onChange={(e) => {
+              handleChange("category", e.target.value);
+              handleChange("subcategory", "");
+            }}
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
             <option value="">-- Select Category --</option>
-            {categories.map((cat) => (
+            {Object.keys(categories).map((cat) => (
               <option key={cat} value={cat}>
-                {cat.replace(/-/g, " ")}
+                {cat}
               </option>
             ))}
           </select>
         </div>
 
+        {/* Subcategory */}
         <div>
-          <label className="block font-semibold mb-1">
-            Subcategory (optional)
-          </label>
+          <label className="block mb-1 font-semibold">Subcategory</label>
           <select
-            name="subcategory"
-            value={formData.subcategory}
-            onChange={handleChange}
-            disabled={
-              !formData.category ||
-              categoriesMap[formData.category]?.length === 0
-            }
+            value={form.subcategory}
+            onChange={(e) => handleChange("subcategory", e.target.value)}
+            disabled={!form.category}
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
-            <option value="">-- Select Subcategory --</option>
-            {formData.category &&
-              categoriesMap[formData.category]?.map((subcat) => (
+            <option value="">-- Optional --</option>
+            {form.category &&
+              categories[form.category].map((subcat) => (
                 <option key={subcat} value={subcat}>
-                  {subcat.replace(/-/g, " ")}
+                  {subcat}
                 </option>
               ))}
           </select>
         </div>
 
-        {/* Rest of form inputs (title, slug, author, etc.) */}
-        {/* ... */}
-
-        <div>
-          <label className="block font-semibold mb-1">Title</label>
+        {/* Image */}
+        <div className="md:col-span-2">
+          <label className="block mb-1 font-semibold">Image URL</label>
           <input
             type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
+            placeholder="https://example.com/image.jpg"
+            value={form.image}
+            onChange={(e) => handleChange("image", e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
 
-        <div>
-          <label className="block font-semibold mb-1">
-            Slug (URL friendly)
-          </label>
-          <input
-            type="text"
-            name="slug"
-            value={formData.slug}
-            onChange={handleChange}
-            required
-            placeholder="e.g. understanding-photosynthesis"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Date</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Author</label>
-          <input
-            type="text"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-            placeholder="Author name"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">
-            Image URL (optional)
-          </label>
-          <input
-            type="text"
-            name="image"
-            value={formData.image}
-            onChange={handleChange}
-            placeholder="e.g. /images/post-cover.jpg"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">
-            Description (optional)
-          </label>
+        {/* Markdown Content */}
+        <div className="md:col-span-2">
+          <label className="block mb-1 font-semibold">Markdown Content</label>
           <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Short description or excerpt"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            rows={2}
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Content</label>
-          <textarea
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
-            placeholder="Write your markdown content here"
-            className="w-full border border-gray-300 rounded px-3 py-2 font-mono"
             rows={10}
-            required
-          />
+            placeholder="Write your markdown content here..."
+            value={form.content}
+            onChange={(e) => handleChange("content", e.target.value)}
+            className="w-full border border-gray-300 rounded px-4 py-3 font-mono"
+          ></textarea>
         </div>
+      </div>
 
+      {/* Button */}
+      <div className="mt-6 text-center">
         <button
-          type="submit"
-          className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition"
+          onClick={handleDownload}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded font-semibold shadow"
         >
-          Generate Markdown File
+          ⬇️ Download .md File
         </button>
-      </form>
-
-      {downloadUrl && (
-        <div className="mt-6 p-4 bg-gray-100 rounded border border-gray-300">
-          <h2 className="font-semibold mb-2">Your Markdown is ready!</h2>
-          <pre className="max-h-48 overflow-auto bg-white p-3 rounded text-sm whitespace-pre-wrap">
-            {markdown}
-          </pre>
-          <a
-            href={downloadUrl}
-            download={`${formData.slug || "post"}.md`}
-            className="inline-block mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Download .md file
-          </a>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,88 +1,93 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import fg from "fast-glob";
 
-const postsDir = path.resolve("src/posts");
-const outputFile = path.resolve("src/posts/index.js");
+const POSTS_DIR = path.resolve("src/posts"); // ✅ Move to src!
+const OUTPUT_JSON = path.resolve("public/posts/index.json");
 
-// Helper to generate slugs
-const slugify = (str) =>
-  str
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+const isMdxFile = (filename) => filename.endsWith(".mdx");
 
-(async () => {
-  const files = await fg("**/*.md", { cwd: postsDir });
+const walkDir = (dir, fileList = []) => {
+  const files = fs.readdirSync(dir);
 
+  files.forEach((file) => {
+    const fullPath = path.join(dir, file);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      walkDir(fullPath, fileList);
+    } else if (isMdxFile(fullPath)) {
+      fileList.push(fullPath);
+    }
+  });
+
+  return fileList;
+};
+
+const generatePostsIndex = () => {
+  const mdxFiles = walkDir(POSTS_DIR);
   const posts = [];
 
-  for (const filepath of files) {
-    const fullPath = path.join(postsDir, filepath);
-    let content;
-
+  mdxFiles.forEach((filePath) => {
     try {
-      content = fs.readFileSync(fullPath, "utf-8");
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      const { data } = matter(fileContent);
+
+      // Skip drafts if you use `draft: true` in frontmatter
+      if (data.draft) return;
+
+      const relPath = path.relative(POSTS_DIR, filePath).replace(/\\/g, "/");
+      const parts = relPath.split("/");
+
+      const category = parts[0];
+      const subcategory = parts.length > 2 ? parts[1] : null;
+      const slug = data.slug || path.basename(filePath, ".mdx");
+
+      const requiredFields = ["title", "date"];
+      const hasAllFields = requiredFields.every((field) => data[field]);
+
+      if (!hasAllFields) {
+        console.warn(`⚠️ Skipping file with missing fields: ${relPath}`);
+        return;
+      }
+
+      const wordCount = fileContent.split(/\s+/).length;
+
+      // Optional: generate Table of Contents from headings
+      const headings = [...fileContent.matchAll(/^#{2,3}\s+(.*)$/gm)].map(
+        (m) => m[1]
+      );
+
+      posts.push({
+        title: data.title,
+        description: data.description || "",
+        date: data.date,
+        category,
+        subcategory,
+        slug,
+        author: data.author || "Unknown",
+        image: data.image || "",
+        filepath: relPath,
+        wordCount,
+        toc: headings,
+      });
     } catch (err) {
-      console.warn(`⚠️ Could not read file: ${filepath}. Skipping...`);
-      continue;
+      console.error(`❌ Failed to parse file: ${filePath}`);
+      console.error(err.message);
     }
+  });
 
-    let data;
-    try {
-      const parsed = matter(content);
-      data = parsed.data;
-    } catch (err) {
-      console.warn(`⚠️ Invalid frontmatter in: ${filepath}. Skipping...`);
-      continue;
-    }
-
-    if (!data.title || !data.date || !data.category) {
-      console.warn(`⚠️ Missing required fields in: ${filepath}. Skipping...`);
-      continue;
-    }
-
-    const parts = filepath.split("/");
-    const category = parts[0] || "blog";
-    const subcategory = parts.length >= 3 ? parts[1] : null;
-    const slug = data.slug || slugify(data.title);
-
-    posts.push({
-      title: data.title,
-      date: data.date,
-      slug,
-      category,
-      subcategory,
-      author: data.author || "Unknown",
-      image: data.image || null,
-      filepath,
-    });
-  }
-
-  // Sort by newest first
+  // Sort by date (newest first)
   posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  // Generate output JS
-  const output = `
-export const posts = [
-  ${posts
-    .map(
-      (post) => `{
-    title: ${JSON.stringify(post.title)},
-    date: "${post.date}",
-    slug: "${post.slug}",
-    category: "${post.category}",
-    subcategory: ${post.subcategory ? `"${post.subcategory}"` : null},
-    author: "${post.author}",
-    image: ${post.image ? `"${post.image}"` : "null"},
-    content: () => import("../posts/${post.filepath}?raw")
-  }`
-    )
-    .join(",\n")}
-];
-`;
+  fs.mkdirSync(path.dirname(OUTPUT_JSON), { recursive: true });
 
-  fs.writeFileSync(outputFile, output.trim());
-  console.log(`✅ Generated ${outputFile} with ${posts.length} valid posts`);
-})();
+  try {
+    fs.writeFileSync(OUTPUT_JSON, JSON.stringify(posts, null, 2));
+    console.log(`✅ Generated ${OUTPUT_JSON} with ${posts.length} posts`);
+  } catch (err) {
+    console.error(`❌ Failed to write index.json`);
+    console.error(err.message);
+  }
+};
+
+generatePostsIndex();

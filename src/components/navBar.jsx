@@ -1,23 +1,33 @@
+// src/components/NavBar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { posts } from "../posts/index";
-import { getCategories } from "../utils/getCategories";
+import { getCategoryMapFromPosts } from "../utils/getCategories";
 
 export default function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [openCat, setOpenCat] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [categoryMap, setCategoryMap] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-
-  const categories = getCategories(posts);
-
   const searchRef = useRef();
 
-  // Filter posts based on search term (title, author, date)
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}posts/index.json`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPosts(data);
+        console.log("✅ Loaded posts:", data);
+        const map = getCategoryMapFromPosts(data);
+        console.log("✅ Built category map (from util):", map);
+        setCategoryMap(map);
+      })
+      .catch((err) => console.error("❌ Failed to fetch posts:", err));
+  }, []);
+
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setSearchResults([]);
@@ -26,7 +36,6 @@ export default function NavBar() {
     }
 
     const term = searchTerm.toLowerCase();
-
     const filtered = posts.filter(
       (p) =>
         p.title.toLowerCase().includes(term) ||
@@ -36,21 +45,24 @@ export default function NavBar() {
 
     setSearchResults(filtered.slice(0, 8));
     setHighlightedIndex(-1);
-  }, [searchTerm]);
+  }, [searchTerm, posts]);
 
-  // Close search dropdown on outside click
   useEffect(() => {
-    function handleClickOutside(event) {
+    const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearchDropdown(false);
         setHighlightedIndex(-1);
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Keyboard navigation inside search dropdown
+  const buildPostUrl = (post) =>
+    post.subcategory
+      ? `/blog/${post.category}/${post.subcategory}/${post.slug}`
+      : `/blog/${post.category}/${post.slug}`;
+
   const onKeyDown = (e) => {
     if (!showSearchDropdown || searchResults.length === 0) return;
 
@@ -67,8 +79,7 @@ export default function NavBar() {
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (highlightedIndex >= 0 && highlightedIndex < searchResults.length) {
-        const post = searchResults[highlightedIndex];
-        const url = buildPostUrl(post);
+        const url = buildPostUrl(searchResults[highlightedIndex]);
         setSearchTerm("");
         setShowSearchDropdown(false);
         setHighlightedIndex(-1);
@@ -80,60 +91,44 @@ export default function NavBar() {
     }
   };
 
-  // Helper to check active route
-  const isActive = (path) => location.pathname.startsWith(path);
-
-  // Build post URL from post object
-  const buildPostUrl = (post) => {
-    if (post.subcategory) {
-      return `/blog/${post.category}/${post.subcategory}/${post.slug}`;
-    }
-    return `/blog/${post.category}/${post.slug}`;
+  const isActive = (path) => {
+    if (path === "/blog") return location.pathname === "/blog"; // exact match for Home
+    return location.pathname.startsWith(path); // fallback for other paths
   };
 
+  const activeClass =
+    "font-semibold text-green-400 border-b-2 border-green-400";
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center text-white bg-transparent backdrop-blur-md shadow-md">
+    <nav className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center text-white bg-transparent backdrop-blur-md shadow-md mb-20">
       <div className="text-2xl font-bold">
         <Link to="/blog" className="hover:text-green-400 transition-colors">
           Druk Yul Techies
         </Link>
       </div>
 
-      {/* Categories with dropdown */}
       <div className="flex items-center space-x-6 text-sm md:text-base relative">
         <Link
           to="/blog"
           className={`hover:text-green-400 transition-colors ${
-            isActive("/blog") &&
-            !Object.keys(categories).some((cat) =>
-              location.pathname.startsWith(`/blog/${cat}`)
-            )
-              ? "underline font-semibold"
-              : ""
+            isActive("/blog") ? activeClass : ""
           }`}
         >
           Home
         </Link>
 
-        {Object.entries(categories).map(([cat, subs]) => (
-          <div
-            key={cat}
-            className="relative"
-            onMouseEnter={() => setOpenCat(cat)}
-            onMouseLeave={() => setOpenCat(null)}
-          >
+        {Object.entries(categoryMap).map(([cat, subs]) => (
+          <div key={cat} className="relative group">
             <Link
               to={`/blog/${cat}`}
               className={`capitalize px-2 py-1 block hover:text-green-400 transition-colors ${
-                isActive(`/blog/${cat}`) ? "underline font-semibold" : ""
+                isActive(`/blog/${cat}`) ? activeClass : ""
               }`}
             >
               {cat.replace(/-/g, " ")}
             </Link>
-
-            {/* Dropdown */}
-            {openCat === cat && subs.length > 0 && (
-              <div className="absolute top-full left-0 mt-1 bg-gray-800 rounded shadow-lg z-50 min-w-[150px]">
+            {subs.length > 0 && (
+              <div className="absolute top-full left-0 mt-1 bg-gray-800 rounded shadow-lg z-50 min-w-[150px] hidden group-hover:block">
                 {subs.map((sub) => (
                   <Link
                     key={sub}
@@ -152,10 +147,11 @@ export default function NavBar() {
           </div>
         ))}
 
+        {/* Additional static links */}
         <Link
           to="/blog/about"
           className={`hover:text-green-400 transition-colors ${
-            isActive("/blog/about") ? "underline font-semibold" : ""
+            isActive("/blog/about") ? activeClass : ""
           }`}
         >
           About
@@ -163,26 +159,18 @@ export default function NavBar() {
         <Link
           to="/blog/contribute"
           className={`hover:text-green-400 transition-colors ${
-            isActive("/blog/contribute") ? "underline font-semibold" : ""
+            isActive("/blog/contribute") ? activeClass : ""
           }`}
         >
           Contribute
         </Link>
-        <Link
-          to="/blog/contact"
-          className={`hover:text-green-400 transition-colors ${
-            isActive("/blog/contact") ? "underline font-semibold" : ""
-          }`}
-        >
-          Contact
-        </Link>
       </div>
 
-      {/* Search bar */}
+      {/* Search */}
       <div className="relative ml-6" ref={searchRef}>
         <input
           type="text"
-          className="rounded px-3 py-1 w-48 md:w-64 focus:outline-none border border-gray-300 shadow-sm text-black"
+          className="rounded px-3 py-1 w-48 md:w-64 focus:outline-none border border-gray-300 shadow-sm text-white"
           placeholder="Search posts..."
           value={searchTerm}
           onChange={(e) => {
@@ -191,45 +179,29 @@ export default function NavBar() {
           }}
           onFocus={() => setShowSearchDropdown(true)}
           onKeyDown={onKeyDown}
-          aria-label="Search posts"
-          role="searchbox"
-          aria-autocomplete="list"
-          aria-expanded={showSearchDropdown}
         />
 
-        {/* Dropdown with results */}
         {showSearchDropdown && searchResults.length > 0 && (
-          <ul
-            className="absolute right-0 mt-1 bg-white rounded shadow-lg w-64 max-h-60 overflow-auto z-50"
-            role="listbox"
-            aria-activedescendant={
-              highlightedIndex >= 0
-                ? `search-result-${highlightedIndex}`
-                : undefined
-            }
-          >
+          <ul className="absolute right-0 mt-1 bg-white rounded shadow-lg w-64 max-h-60 overflow-auto z-50">
             {searchResults.map((post, index) => (
               <li
-                id={`search-result-${index}`}
                 key={`${post.category}-${post.subcategory ?? "none"}-${
                   post.slug
                 }`}
-                role="option"
-                aria-selected={highlightedIndex === index}
                 className={`block px-4 py-2 text-gray-900 hover:bg-gray-200 cursor-pointer ${
                   highlightedIndex === index ? "bg-gray-300 font-semibold" : ""
                 }`}
-                onMouseEnter={() => setHighlightedIndex(index)}
-                onMouseLeave={() => setHighlightedIndex(-1)}
                 onClick={() => {
                   const url = buildPostUrl(post);
+                  console.log("🔍 Navigating to:", url);
                   setSearchTerm("");
                   setShowSearchDropdown(false);
                   setHighlightedIndex(-1);
                   navigate(url);
                 }}
               >
-                <strong>{post.title}</strong> by {post.author} <br />
+                <strong>{post.title}</strong> by {post.author}
+                <br />
                 <span className="text-xs text-gray-600">
                   {post.category}
                   {post.subcategory ? ` / ${post.subcategory}` : ""} —{" "}
@@ -240,7 +212,6 @@ export default function NavBar() {
           </ul>
         )}
 
-        {/* No results */}
         {showSearchDropdown &&
           searchTerm.trim() &&
           searchResults.length === 0 && (
