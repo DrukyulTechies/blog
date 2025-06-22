@@ -1,0 +1,39 @@
+---
+title: "Notes on combinations"
+description: "What is combination"
+date: "2025-06-22"
+slug: "combination"
+category: "aptitude"
+subcategory: "combinations"
+author: "Norbu"
+image: "https://picsum.photos/200/300?grayscale"
+---
+
+## Home is Home
+
+<br/>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer imperdiet facilisis sem, a pellentesque libero vulputate in. Praesent interdum pulvinar enim. Nunc suscipit tincidunt pharetra. Nam nec nunc id risus consequat interdum a sit amet ligula. Nulla molestie neque dapibus sodales venenatis. Suspendisse luctus arcu nibh, hendrerit vulputate elit sodales eu. Sed condimentum ipsum eget dui vehicula aliquet. Cras auctor hendrerit justo eu posuere. Integer vulputate purus eu nisi eleifend, hendrerit accumsan dui elementum. Quisque eu lectus vitae mi elementum feugiat at id justo. Nullam aliquam lobortis tortor.<br/>
+
+## home is not where whome is not
+
+<br/>
+Vivamus bibendum nunc vitae lorem scelerisque, ac vehicula nisl commodo. Sed lacinia, eros eu feugiat egestas, lacus ligula tristique turpis, a interdum lacus elit et tortor. Sed eu varius nisl, et varius dolor. Integer a diam quis urna faucibus placerat. Duis pharetra dui eget quam aliquet facilisis. Cras ligula sem, interdum nec auctor id, sollicitudin ac massa. Phasellus magna purus, efficitur congue molestie id, convallis in risus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam aliquet nisl ac faucibus varius. Vivamus id cursus nunc. Etiam id lacus tortor. Quisque volutpat varius nulla dictum porta. In aliquam elementum blandit. Proin velit nisi, blandit id turpis sit amet, consequat fringilla sem. Praesent risus quam, ullamcorper sed ipsum ut, cursus euismod diam. Aenean molestie tellus at nibh venenatis, eget porta sapien consequat.
+
+Mauris in nulla condimentum, placerat ligula non, facilisis ligula. Duis pulvinar dolor nisl, vitae dapibus dolor molestie et. Pellentesque fermentum neque ex, vitae commodo massa finibus eget. Curabitur hendrerit nisl ac lectus dictum, a dignissim est euismod. Nulla ac sollicitudin arcu. Fusce vulputate, lorem elementum porttitor hendrerit, neque diam pulvinar mi, sit amet sollicitudin sapien eros faucibus lectus. Quisque pellentesque et dui pellentesque elementum.
+
+Sed venenatis est commodo dui scelerisque pharetra. Donec vitae luctus neque, ut egestas ligula. Donec porta neque vel interdum dapibus. In hac habitasse platea dictumst. Sed sit amet ligula auctor, tincidunt ipsum eu, eleifend ex. Vestibulum condimentum leo nec turpis feugiat, et fringilla massa sagittis. Vivamus eu imperdiet dui. Proin eget ullamcorper orci, id mollis enim. Maecenas et euismod turpis, vel eleifend lacus. Vestibulum quis efficitur urna. Sed id sapien rhoncus, pretium mi quis, posuere sapien.
+
+Aliquam sit amet erat elementum, cursus magna quis, dignissim orci. Ut posuere mi purus, a varius metus efficitur a. Donec vehicula ipsum luctus augue sollicitudin, eu egestas enim pellentesque. Quisque eget nisi eu nibh fringilla lacinia. In hac habitasse platea dictumst. Maecenas convallis nisi lorem, sagittis euismod dui blandit euismod. Nunc fermentum felis in libero semper, eget eleifend felis tempor. Pellentesque ultrices ornare velit, sed faucibus libero rhoncus nec. Duis mattis sagittis felis. Donec ut sapien eu est hendrerit consequat. Suspendisse vel ultricies sem, id scelerisque nunc. Donec tincidunt quam et tortor tempor gravida.
+
+Generated 5 paragraphs, 457 words, 3156 bytes of Lorem Ipsum
+
+Vivamus bibendum nunc vitae lorem scelerisque, ac vehicula nisl commodo. Sed lacinia, eros eu feugiat egestas, lacus ligula tristique turpis, a interdum lacus elit et tortor. Sed eu varius nisl, et varius dolor. Integer a diam quis urna faucibus placerat. Duis pharetra dui eget quam aliquet facilisis. Cras ligula sem, interdum nec auctor id, sollicitudin ac massa. Phasellus magna purus, efficitur congue molestie id, convallis in risus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam aliquet nisl ac faucibus varius. Vivamus id cursus nunc. Etiam id lacus tortor. Quisque volutpat varius nulla dictum porta. In aliquam elementum blandit. Proin velit nisi, blandit id turpis sit amet, consequat fringilla sem. Praesent risus quam, ullamcorper sed ipsum ut, cursus euismod diam. Aenean molestie tellus at nibh venenatis, eget porta sapien consequat.
+
+Mauris in nulla condimentum, placerat ligula non, facilisis ligula. Duis pulvinar dolor nisl, vitae dapibus dolor molestie et. Pellentesque fermentum neque ex, vitae commodo massa finibus eget. Curabitur hendrerit nisl ac lectus dictum, a dignissim est euismod. Nulla ac sollicitudin arcu. Fusce vulputate, lorem elementum porttitor hendrerit, neque diam pulvinar mi, sit amet sollicitudin sapien eros faucibus lectus. Quisque pellentesque et dui pellentesque elementum.
+
+Sed venenatis est commodo dui scelerisque pharetra. Donec vitae luctus neque, ut egestas ligula. Donec porta neque vel interdum dapibus. In hac habitasse platea dictumst. Sed sit amet ligula auctor, tincidunt ipsum eu, eleifend ex. Vestibulum condimentum leo nec turpis feugiat, et fringilla massa sagittis. Vivamus eu imperdiet dui. Proin eget ullamcorper orci, id mollis enim. Maecenas et euismod turpis, vel eleifend lacus. Vestibulum quis efficitur urna. Sed id sapien rhoncus, pretium mi quis, posuere sapien.
+
+<h3> Let ut go </h3>
+Aliquam sit amet erat elementum, cursus magna quis, dignissim orci. Ut posuere mi purus, a varius metus efficitur a. Donec vehicula ipsum luctus augue sollicitudin, eu egestas enim pellentesque. Quisque eget nisi eu nibh fringilla lacinia. In hac habitasse platea dictumst. Maecenas convallis nisi lorem, sagittis euismod dui blandit euismod. Nunc fermentum felis in libero semper, eget eleifend felis tempor. Pellentesque ultrices ornare velit, sed faucibus libero rhoncus nec. Duis mattis sagittis felis. Donec ut sapien eu est hendrerit consequat. Suspendisse vel ultricies sem, id scelerisque nunc. Donec tincidunt quam et tortor tempor gravida.
+
+Generated 5 paragraphs, 457 words, 3156 bytes of Lorem Ipsum
